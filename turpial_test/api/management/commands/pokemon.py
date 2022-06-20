@@ -12,9 +12,8 @@ class Command(BaseCommand):
         with open(FIXTURE_ROUTE+'/pokemons.json', 'r') as f:
             data = json.load(f)
             pokemon_list = data.get('data')
-            pokemon_serialzier = PokemonSerializer(data=pokemon_list, many=True)
-            if pokemon_serialzier.is_valid():
-                pokemon_serialzier.save()
+            pk = PokemonSerializer(data=pokemon_list, many=True)
+            if pk.is_valid():
+                pk.save()
             else:
-                print(str(pokemon_serialzier.errors))
-        self.stdout.write(self.style.SUCCESS('Successfully closed poll "%s"' % poll_id))
+                print(str(pk.errors))

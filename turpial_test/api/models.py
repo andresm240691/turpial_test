@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 class Ability(models.Model):
     name = models.CharField(max_length=150,  unique=True)
@@ -8,9 +9,11 @@ class Ability(models.Model):
     def create(cls, str_name):
         obj = Ability.objects.filter(name=str_name)
         if not obj.exists():
-            new_item = cls(name=str_name).save()
+            new_item = cls(name=str_name)
+            new_item.save()
             return new_item
         return obj.first()
+
 
 class Move(models.Model):
     name = models.CharField(max_length=150,  unique=True)
@@ -23,6 +26,7 @@ class Move(models.Model):
             new_item.save()
             return new_item
         return obj.first()
+
 
 class Stat(models.Model):
     name = models.CharField(max_length=150)
@@ -39,7 +43,8 @@ class Stat(models.Model):
             new_item.save()
             return new_item
         return obj.first()
-    
+
+
 class Type(models.Model):
     name = models.CharField(max_length=150, unique=True)
 
@@ -51,6 +56,7 @@ class Type(models.Model):
             new_item.save()
             return new_item
         return obj.first()
+
 
 class Location(models.Model):
     name = models.CharField(max_length=150, unique=True)
@@ -64,9 +70,11 @@ class Location(models.Model):
             return new_item
         return obj.first()
 
+
 class Region(models.Model):
     name = models.CharField(max_length=150, unique=True)
     locations = models.ManyToManyField(Location)
+
 
 class Pokemon(models.Model):
     color = models.CharField(max_length=150)
@@ -76,12 +84,13 @@ class Pokemon(models.Model):
     weight = models.FloatField()
     flavor_text = models.TextField()
     sprites = models.JSONField()
-    abilities = models.ManyToManyField(Ability)
+    abilities = models.ManyToManyField(Ability, related_name='pokemon_abilities')
     moves = models.ManyToManyField(Move, related_name='pokemon_move')
-    stats = models.ManyToManyField(Stat,related_name='pokemon_stat')
+    stats = models.ManyToManyField(Stat, related_name='pokemon_stat')
     types = models.ManyToManyField(Type, related_name='pokemon_type')
-    
+
+
 class Area(models.Model):
     name = models.CharField(max_length=150, unique=True)
     locations = models.ForeignKey(Location, on_delete=models.CASCADE)
-    pokemon = models.ManyToManyField(Pokemon,related_name='area_pokemon')
+    pokemon = models.ManyToManyField(Pokemon, related_name='area_pokemon')

@@ -8,31 +8,38 @@ from api.models import (
     Ability
 )
 
-class MoveSerialzier(serializers.ModelSerializer):
+
+class MoveSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Move
         fields = '__all__'
 
-class StatSerialzier(serializers.ModelSerializer):
+
+class StatSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Stat
-        fields = '__all__'
+        fields = [
+            'name',
+            'value'
+        ]
 
-class TypeSerialzier(serializers.ModelSerializer):
+class TypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Type
         fields = '__all__'
 
-class AreaSerialzier(serializers.ModelSerializer):
+
+class AreaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Area
         fields = '__all__'
 
-class AbilitiesSerialzier(serializers.ModelSerializer):
+
+class AbilitiesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ability
@@ -42,14 +49,14 @@ class AbilitiesSerialzier(serializers.ModelSerializer):
 class PokemonSerializer(serializers.ModelSerializer):
 
     moves = serializers.ListField(
-        child = serializers.CharField(max_length=150)
+        child=serializers.CharField(max_length=150)
     )
-    stats = StatSerialzier(many=True)
+    stats = StatSerializer(many=True)
     types = serializers.ListField(
-        child = serializers.CharField(max_length=150)
+        child=serializers.CharField(max_length=150)
     )
     abilities = serializers.ListField(
-        child = serializers.CharField(max_length=150),
+        child=serializers.CharField(max_length=150),
     )
 
     class Meta:
@@ -61,7 +68,6 @@ class PokemonSerializer(serializers.ModelSerializer):
         stats = validated_data.pop('stats')
         types = validated_data.pop('types')
         abilities = validated_data.pop('abilities')
-
         pokemon = Pokemon(**validated_data)
         pokemon.save()
         
@@ -81,30 +87,42 @@ class PokemonSerializer(serializers.ModelSerializer):
                 pokemon.types.add(new_type)
         
         for item in abilities:
-            ability = Type.create(item)
+            ability = Ability.create(item)
             if ability:
-                pokemon.types.add(ability)
+                pokemon.abilities.add(ability)
 
+        pokemon.save()
         return pokemon
 
     
-    
 class PokemonListSerializer(serializers.ModelSerializer):
 
-    
-    moves = serializers.ListField(
-        child = serializers.CharField(max_length=150)
-    )
-    stats = StatSerialzier(many=True)
-    types = serializers.ListField(
-        child = serializers.CharField(max_length=150)
-    )
-    abilities = serializers.ListField(
-        child = serializers.CharField(max_length=150),
-    )
+    stats = StatSerializer(many=True, read_only=True)
+    moves = serializers.SerializerMethodField()
+    types = serializers.SerializerMethodField()
+    abilities = serializers.SerializerMethodField()
 
+    def get_moves(self, obj):
+        return [item.name for item in obj.moves.all()]
 
+    def get_abilities(self, obj):
+        return [item.name for item in obj.abilities.all()]
+
+    def get_types(self, obj):
+        return [item.name for item in obj.types.all()]
 
     class Meta:
         model = Pokemon
-        fields = '__all__'
+        fields = [
+            'color',
+            'capture_rate',
+            'height',
+            'name',
+            'weight',
+            'flavor_text',
+            'sprites',
+            'abilities',
+            'moves',
+            'stats',
+            'types',
+        ]
