@@ -92,5 +92,14 @@ class Pokemon(models.Model):
 
 class Area(models.Model):
     name = models.CharField(max_length=150, unique=True)
-    locations = models.ForeignKey(Location, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
     pokemon = models.ManyToManyField(Pokemon, related_name='area_pokemon')
+
+    @classmethod
+    def create(cls, str_name):
+        obj = Location.objects.filter(name=str_name)
+        if not obj.exists():
+            new_item = cls(name=str_name)
+            new_item.save()
+            return new_item
+        return obj.first()

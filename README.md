@@ -27,3 +27,8 @@
 
     python manage.py runserver
 
+### Load Fixtures ###
+
+    python manage.py pokemons
+    python manage.py area
+    

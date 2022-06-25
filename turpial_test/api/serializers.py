@@ -5,8 +5,10 @@ from api.models import (
     Stat,
     Type,
     Area,
-    Ability
+    Ability,
+    Location
 )
+from django.db.models.functions import Lower
 
 
 class MoveSerializer(serializers.ModelSerializer):
@@ -33,6 +35,41 @@ class TypeSerializer(serializers.ModelSerializer):
 
 
 class AreaSerializer(serializers.ModelSerializer):
+    location = serializers.CharField(max_length=150)
+    pokemons = serializers.ListField(
+        child=serializers.CharField(max_length=150)
+    )
+
+    class Meta:
+        model = Area
+        fields = [
+            'name',
+            'location',
+            'pokemons'
+        ]
+
+    def create(self, validated_data):
+        location = validated_data.pop('location')
+        pokemons = validated_data.pop('pokemons')
+        area = Area(**validated_data)
+
+        location_query = Location.objects.annotate(
+            name_lower=Lower('name')).filter(
+            name_lower__icontains=location).first()
+        if not location_query:
+            location_query = Location(name=location)
+            location_query.save()
+
+        area.location_id = location_query.id
+        area.save()
+        pokemons_query = Pokemon.objects.annotate(
+            name_lower=Lower('name')).filter(
+            name_lower__in=pokemons).all()
+        area.pokemon.set(pokemons_query)
+        area.save()
+
+
+class AreaListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Area
