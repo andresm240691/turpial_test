@@ -1,29 +1,25 @@
-# README #
+# TURPIAL TEST #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+### Requirements ###
 
-### What is this repository for? ###
+* Python 3.8.10
+* Postgres 12
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
 
-### How do I get set up? ###
+### Enviroments ###
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+    # Database Postgres SQL 
+    export DB_NAME=turpial_dev_db2
+    export DB_USER=admin
+    export DB_PASSWORD=admin
+    export DB_HOST=localhost
+    export DB_PORT=5433
 
-### Contribution guidelines ###
+    # Configuration
+    export ALLOWED_HOSTS=*
+    export FIXTURE_ROUTE='/home/andres/Projects/turpial_test/turpial_test/fixtures'
 
-* Writing tests
-* Code review
-* Other guidelines
+### Installation ###
 
-### Who do I talk to? ###
+    python manage.py runserver
 
-* Repo owner or admin
-* Other community or team contact
