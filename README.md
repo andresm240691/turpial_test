@@ -20,6 +20,10 @@
     export FIXTURE_ROUTE='/home/andres/Projects/turpial_test/turpial_test/fixtures'
 
 ### Installation ###
+    
+    pip install -r requirements.txt
+
+### Deploy Application ###
 
     python manage.py runserver
 
