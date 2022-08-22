@@ -1,7 +1,8 @@
 from .serializers import (
     PokemonListSerializer,
     PokemonPartySerializer,
-    PokemonPartyInSerializer
+    PokemonPartyInSerializer,
+    PokemonPartyDetailSerializer
 )
 from .models import (
     Pokemon,
@@ -37,7 +38,9 @@ class PokemonsOwnCRViewSet(ListCreateAPIView):
 
     def get_queryset(self):
         return self.queryset.filter(
-            user=self.request.user, is_party_member=True).all()[:6]
+            user=self.request.user,
+            is_party_member=True
+        ).all()[:6]
 
     def create(self, request, *args, **kwargs):
         try:
@@ -64,3 +67,15 @@ class PokemonOwnRUDView(UpdateAPIView,
     permission_classes = (IsAuthenticated,)
     queryset = PokemonParty.objects.all()
     serializer_class = PokemonPartySerializer
+
+
+class PokemonOwnParty(ListCreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = PokemonParty.objects.all()
+    serializer_class = PokemonPartyDetailSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(
+            user=self.request.user,
+            is_party_member=True
+        ).all()[:6]

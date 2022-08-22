@@ -249,4 +249,18 @@ class PokemonPartyInSerializer(serializers.Serializer):
     is_party_member = serializers.BooleanField(required=True)
 
 
+class PokemonPartyDetailSerializer(PokemonPartyInSerializer):
+
+    specie = PokemonDetailSerializer(
+        read_only=True, allow_null=True)
+
+    class Meta:
+        class Meta:
+            model = PokemonParty
+            fields = (
+                'id',
+                'spice',
+                'nick_name',
+                'is_party_member'
+            )
 

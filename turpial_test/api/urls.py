@@ -9,4 +9,5 @@ urlpatterns = [
    path('pokemons/<int:pk>', api_views.PokemonsDetailView.as_view()),
    path('pokemons/own/', api_views.PokemonsOwnCRViewSet.as_view()),
    path('pokemons/own/<int:pk>', api_views.PokemonOwnRUDView.as_view()),
+   path('pokemons/own/party/', api_views.PokemonOwnParty.as_view()),
 ]
