@@ -17,7 +17,8 @@
 
     # Configuration
     export ALLOWED_HOSTS=*
-    export FIXTURE_ROUTE='/home/andres/Projects/turpial_test/turpial_test/fixtures'
+    export FIXTURE_ROUTE='<str_path>/turpial_test/turpial_test/fixtures' 
+    # Example /home/andres/Projects/turpial_test/turpial_test/fixtures'
 
 ### Installation ###
     
@@ -25,6 +26,8 @@
 
 ### Deploy Application ###
 
+    python manage.py makemigrations
+    python manage.py migrate
     python manage.py runserver
 
 ### Load Fixtures ###

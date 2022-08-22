@@ -6,7 +6,9 @@ from api.models import (
     Type,
     Area,
     Ability,
-    Location
+    Location,
+    Region,
+    PokemonParty
 )
 from django.db.models.functions import Lower
 
@@ -23,9 +25,11 @@ class StatSerializer(serializers.ModelSerializer):
     class Meta:
         model = Stat
         fields = [
+            'id',
             'name',
             'value'
         ]
+
 
 class TypeSerializer(serializers.ModelSerializer):
 
@@ -43,6 +47,7 @@ class AreaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Area
         fields = [
+            'id',
             'name',
             'location',
             'pokemons'
@@ -67,6 +72,38 @@ class AreaSerializer(serializers.ModelSerializer):
             name_lower__in=pokemons).all()
         area.pokemon.set(pokemons_query)
         area.save()
+        return area
+
+
+class RegionSerializer(serializers.ModelSerializer):
+    locations = serializers.ListField(
+        child=serializers.CharField(max_length=150)
+    )
+
+    class Meta:
+        model = Area
+        fields = [
+            'id',
+            'name',
+            'locations',
+
+        ]
+
+    def create(self, validated_data):
+        locations = validated_data.pop('locations')
+        region = Region(**validated_data)
+        region.save()
+        locations_list = []
+        for location in locations:
+            location_query = Location.objects.annotate(
+                name_lower=Lower('name')).filter(
+                name_lower__icontains=location).first()
+            if not location_query:
+                location_query = Location(name=location)
+                location_query.save()
+            locations_list.append(location_query)
+        region.locations.set(locations_list)
+        return region
 
 
 class AreaListSerializer(serializers.ModelSerializer):
@@ -151,6 +188,7 @@ class PokemonListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pokemon
         fields = [
+            'id',
             'color',
             'capture_rate',
             'height',
@@ -163,3 +201,52 @@ class PokemonListSerializer(serializers.ModelSerializer):
             'stats',
             'types',
         ]
+
+
+class RegionsSerializer(serializers.ModelSerializer):
+    areas = serializers.ListField(
+        child=serializers.CharField(max_length=150)
+    )
+    region = serializers.CharField(max_length=150)
+
+    class Meta:
+        model = Region
+        fields = [
+            'id',
+            'areas',
+            'region',
+            'name'
+        ]
+
+    def create(self, validated_data):
+        region = validated_data.pop('region')
+        areas = validated_data.pop('areas')
+        location = Location(**validated_data)
+        return location
+
+
+class PokemonDetailSerializer(serializers.ModelSerializer):
+
+    moves = MoveSerializer(read_only=True, many=True)
+    stats = StatSerializer(read_only=True, many=True)
+    types = TypeSerializer(read_only=True, many=True)
+    abilities = AbilitiesSerializer(read_only=True,many=True)
+
+    class Meta:
+        model = Pokemon
+        fields = '__all__'
+
+
+class PokemonPartySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PokemonParty
+        fields = '__all__'
+
+
+class PokemonPartyInSerializer(serializers.Serializer):
+    specie = serializers.IntegerField(required=True)
+    nick_name = serializers.CharField(required=True)
+    is_party_member = serializers.BooleanField(required=True)
+
+
+

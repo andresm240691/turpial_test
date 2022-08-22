@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 # Create your models here.
@@ -103,3 +104,10 @@ class Area(models.Model):
             new_item.save()
             return new_item
         return obj.first()
+
+
+class PokemonParty(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    specie = models.ForeignKey(Pokemon, on_delete=models.CASCADE)
+    nick_name = models.CharField(max_length=150, blank=True)
+    is_party_member = models.BooleanField(default=False)
