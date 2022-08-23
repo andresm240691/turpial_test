@@ -3,15 +3,15 @@ from .serializers import (
     PokemonPartySerializer,
     PokemonPartyInSerializer,
     PokemonPartyDetailSerializer,
-    AreaListSerializer,
     RegionListSerializer,
-    RegionDetailSerializer
+    RegionDetailSerializer,
+    LocationDetailSerializer
 )
 from .models import (
     Pokemon,
     PokemonParty,
     Region,
-    Area
+    Location
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -132,7 +132,19 @@ class RegionListView(ListAPIView):
     serializer_class = RegionListSerializer
 
 
-class RegionDetailView(ListAPIView, RetrieveAPIView):
+class RegionDetailView(ListAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = Region.objects.all()
     serializer_class = RegionDetailSerializer
+
+
+class LocationDetail(RetrieveAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = Location.objects.all()
+    serializer_class = LocationDetailSerializer
+
+
+class LocationDetail(RetrieveAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = Location.objects.all()
+    serializer_class = LocationDetailSerializer

@@ -292,3 +292,39 @@ class PokemonPartyDetailSerializer(serializers.ModelSerializer):
             'is_party_member'
         )
 
+
+class AreaDetailSerializer(serializers.ModelSerializer):
+    pokemon_count = serializers.SerializerMethodField()
+    location = serializers.SerializerMethodField()
+
+    def get_pokemon_count(self, obj):
+        return obj.pokemon.count()
+
+    def get_location(self, obj):
+        return obj.location.id
+
+    class Meta:
+        model = Area
+        fields = [
+            'name',
+            'pokemon_count',
+            'location',
+            'id'
+        ]
+
+
+class LocationDetailSerializer(serializers.ModelSerializer):
+
+    areas = serializers.SerializerMethodField()
+
+    def get_areas(self, obj):
+        areas = Area.objects.filter(location=obj)
+        return AreaDetailSerializer(areas, many=True).data
+
+    class Meta:
+        model = Location
+        fields = [
+            'id',
+            'areas',
+            'name'
+        ]

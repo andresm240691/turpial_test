@@ -13,4 +13,5 @@ urlpatterns = [
    path('pokemons/own/swap/', api_views.PokemonOwnSwap.as_view()),
    path('regions', api_views.RegionListView.as_view()),
    path('regions/<int:pk>', api_views.RegionDetailView.as_view()),
+   path('location/<int:pk>', api_views.LocationDetail.as_view()),
 ]
