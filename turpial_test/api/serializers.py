@@ -41,8 +41,7 @@ class TypeSerializer(serializers.ModelSerializer):
 class AreaSerializer(serializers.ModelSerializer):
     location = serializers.CharField(max_length=150)
     pokemons = serializers.ListField(
-        child=serializers.CharField(max_length=150)
-    )
+        child=serializers.CharField(max_length=150))
 
     class Meta:
         model = Area
@@ -75,18 +74,48 @@ class AreaSerializer(serializers.ModelSerializer):
         return area
 
 
+class RegionListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Region
+        fields = [
+            'id',
+            'name',
+        ]
+
+
+class LocationDetailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Location
+        fields = ['name']
+
+
+class RegionDetailSerializer(RegionListSerializer):
+
+    locations = LocationDetailSerializer(
+        read_only=True, allow_null=True, many=True)
+
+    class Meta(RegionListSerializer.Meta):
+        model = Region
+        fields = [
+            'id',
+            'name',
+            'locations'
+        ]
+
+
 class RegionSerializer(serializers.ModelSerializer):
     locations = serializers.ListField(
         child=serializers.CharField(max_length=150)
     )
 
     class Meta:
-        model = Area
+        model = Region
         fields = [
             'id',
             'name',
             'locations',
-
         ]
 
     def create(self, validated_data):
@@ -249,18 +278,17 @@ class PokemonPartyInSerializer(serializers.Serializer):
     is_party_member = serializers.BooleanField(required=True)
 
 
-class PokemonPartyDetailSerializer(PokemonPartyInSerializer):
+class PokemonPartyDetailSerializer(serializers.ModelSerializer):
 
     specie = PokemonDetailSerializer(
         read_only=True, allow_null=True)
 
     class Meta:
-        class Meta:
-            model = PokemonParty
-            fields = (
-                'id',
-                'spice',
-                'nick_name',
-                'is_party_member'
-            )
+        model = PokemonParty
+        fields = (
+            'id',
+            'specie',
+            'nick_name',
+            'is_party_member'
+        )
 
