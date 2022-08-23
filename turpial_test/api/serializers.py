@@ -313,6 +313,18 @@ class AreaDetailSerializer(serializers.ModelSerializer):
         ]
 
 
+class AreaCustomDetailSerializer(AreaDetailSerializer):
+    pokemons = serializers.SerializerMethodField()
+
+    def get_pokemons(self, obj):
+        pokemon_list = obj.pokemon.all()
+        return PokemonListSerializer(pokemon_list, many=True).data
+
+    class Meta(AreaDetailSerializer.Meta):
+        own_fields = ['pokemons']
+        fields = own_fields + AreaDetailSerializer.Meta.fields
+
+
 class LocationDetailSerializer(serializers.ModelSerializer):
 
     areas = serializers.SerializerMethodField()
@@ -328,3 +340,4 @@ class LocationDetailSerializer(serializers.ModelSerializer):
             'areas',
             'name'
         ]
+
