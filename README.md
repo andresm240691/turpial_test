@@ -21,7 +21,11 @@
     # Example /home/andres/Projects/turpial_test/turpial_test/fixtures'
 
 ### Installation ###
+    ### make a virtual enviroment ###
+    virtualenv -p python3 venv
+    source venv/bn/activate
     
+    ### Install the requirements ###
     pip install -r requirements.txt
 
 ### Deploy Application ###

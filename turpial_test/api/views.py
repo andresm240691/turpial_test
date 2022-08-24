@@ -27,19 +27,15 @@ from rest_framework.generics import (
 from rest_framework.views import APIView
 
 
-class PokemonsListView(ListAPIView):
-    permission_classes = (IsAuthenticated,)
-    queryset = Pokemon.objects.all()
-    serializer_class = PokemonListSerializer
-
-
 class PokemonsDetailView(RetrieveAPIView):
+    """  Pokemon specie detail """
     permission_classes = (IsAuthenticated,)
     queryset = Pokemon.objects.all()
     serializer_class = PokemonListSerializer
 
 
 class PokemonsOwnCRViewSet(ListCreateAPIView):
+    """ Pokemon Storage / Pokemon catch """
     permission_classes = (IsAuthenticated,)
     queryset = PokemonParty.objects.all()
     serializer_class = PokemonPartySerializer
@@ -52,9 +48,11 @@ class PokemonsOwnCRViewSet(ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         try:
-            count_pokemons = PokemonParty.objects.filter(user=self.request.user)
+            count_pokemons = PokemonParty.objects.filter(
+                user=self.request.user)
             if count_pokemons.count() <= 6:
-                in_pokemon_party = PokemonPartyInSerializer(data=request.data)
+                in_pokemon_party = PokemonPartyInSerializer(
+                    data=request.data)
                 if in_pokemon_party.is_valid():
                     data = in_pokemon_party.data
                     specie = Pokemon.objects.get(id=data.get('specie'))
@@ -75,24 +73,14 @@ class PokemonsOwnCRViewSet(ListCreateAPIView):
 class PokemonOwnRUDView(UpdateAPIView,
                         DestroyAPIView,
                         RetrieveAPIView):
+    """ Pokemon rename / Pokemon release """
     permission_classes = (IsAuthenticated,)
     queryset = PokemonParty.objects.all()
     serializer_class = PokemonPartySerializer
 
 
 class PokemonOwnParty(ListCreateAPIView):
-    permission_classes = (IsAuthenticated,)
-    queryset = PokemonParty.objects.all()
-    serializer_class = PokemonPartyDetailSerializer
-
-    def get_queryset(self):
-        return self.queryset.filter(
-            user=self.request.user,
-            is_party_member=True
-        ).all()[:6]
-
-
-class PokemonOwnParty(ListCreateAPIView):
+    """ Pokemon party """
     permission_classes = (IsAuthenticated,)
     queryset = PokemonParty.objects.all()
     serializer_class = PokemonPartyDetailSerializer
@@ -105,7 +93,7 @@ class PokemonOwnParty(ListCreateAPIView):
 
 
 class PokemonOwnSwap(APIView):
-
+    """  PokemonOwnSwap """
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, format=None):
@@ -132,24 +120,28 @@ class PokemonOwnSwap(APIView):
 
 
 class RegionListView(ListAPIView):
+    """ Regions list """
     permission_classes = (IsAuthenticated,)
     queryset = Region.objects.all()
     serializer_class = RegionListSerializer
 
 
 class RegionDetailView(RetrieveAPIView):
+    """ Regions detail """
     permission_classes = (IsAuthenticated,)
     queryset = Region.objects.all()
     serializer_class = RegionDetailSerializer
 
 
 class LocationDetailView(RetrieveAPIView):
+    """ Location detail """
     permission_classes = (IsAuthenticated,)
     queryset = Location.objects.all()
     serializer_class = LocationDetailSerializer
 
 
 class AreaDetailView(RetrieveAPIView):
+    """ Area detail """
     permission_classes = (IsAuthenticated,)
     queryset = Area.objects.all()
     serializer_class = AreaCustomDetailSerializer
