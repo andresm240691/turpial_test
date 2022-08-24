@@ -52,19 +52,22 @@ class PokemonsOwnCRViewSet(ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         try:
-            in_pokemon_party = PokemonPartyInSerializer(data=request.data)
-            if in_pokemon_party.is_valid():
-                data = in_pokemon_party.data
-                specie = Pokemon.objects.get(id=data.get('specie'))
-                if specie:
-                    data.update(user=self.request.user, specie=specie)
-                    pp = PokemonParty(**data)
-                    pp.save()
-                    return Response(status=201, data=PokemonPartySerializer(pp).data)
+            count_pokemons = PokemonParty.objects.filter(user=self.request.user)
+            if count_pokemons.count() <= 6:
+                in_pokemon_party = PokemonPartyInSerializer(data=request.data)
+                if in_pokemon_party.is_valid():
+                    data = in_pokemon_party.data
+                    specie = Pokemon.objects.get(id=data.get('specie'))
+                    if specie:
+                        data.update(user=self.request.user, specie=specie)
+                        pp = PokemonParty(**data)
+                        pp.save()
+                        return Response(status=201, data=PokemonPartySerializer(pp).data)
+                    else:
+                        return Response(status=400, data={'message': 'Specie does not exist'})
                 else:
-                    return Response(status=400, data={'message': 'Specie does not exist'})
-            else:
-                return Response(status=400, data=in_pokemon_party.errors)
+                    return Response(status=400, data=in_pokemon_party.errors)
+            return Response(status=200, data={'message': 'You can only have 6 pokemon'})
         except Exception as e:
             return Response(status=400, data={'message': str(e)})
 
