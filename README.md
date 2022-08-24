@@ -44,7 +44,7 @@
         - username: admin
         - password: admin
 
-    ## Run the project
+    ### Run the project ###
     python manage.py runserver 0.0.0.0:8000
 
 ### Note ### 
