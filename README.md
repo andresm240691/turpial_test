@@ -2,7 +2,7 @@
 
 ### Requirements ###
 
-* Python 3.8.10
+* Python 3.8.5
 * Postgres 12
 
 
@@ -25,13 +25,23 @@
     pip install -r requirements.txt
 
 ### Deploy Application ###
-
+    
+    ### Migrate Database ###
     python manage.py makemigrations
     python manage.py migrate
-    python manage.py runserver
 
-### Load Fixtures ###
-
-    python manage.py pokemons
+    ### Load Fixtures ###
+    python manage.py pokemon
     python manage.py area
+    python manage.py region
+    
+    ### Create User ####
+    python manage.py createsuperuser
+        - username: admin
+        - password: admin
+
+    ## Run the project
+    python manage.py runserver 0.0.0.0:8000
+
+
     

@@ -12,6 +12,7 @@ class Command(BaseCommand):
         with open(FIXTURE_ROUTE+'/locations.json', 'r') as f:
             data = json.load(f)
             data = data.get('data')
+            import pudb;pudb.set_trace()
             serializer = RegionSerializer(data=data, many=True)
             if serializer.is_valid():
                 serializer.save()
