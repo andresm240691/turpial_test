@@ -47,5 +47,12 @@
     ## Run the project
     python manage.py runserver 0.0.0.0:8000
 
+### Note ### 
+    
+    The request_test.json file contains the 
+    collection of calls to the api
+
+
+
 
     
