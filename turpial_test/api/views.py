@@ -60,12 +60,15 @@ class PokemonsOwnCRViewSet(ListCreateAPIView):
                         data.update(user=self.request.user, specie=specie)
                         pp = PokemonParty(**data)
                         pp.save()
-                        return Response(status=201, data=PokemonPartySerializer(pp).data)
+                        return Response(
+                            status=201, data=PokemonPartySerializer(pp).data)
                     else:
-                        return Response(status=400, data={'message': 'Specie does not exist'})
+                        return Response(status=400, data={
+                            'message': 'Specie does not exist'})
                 else:
                     return Response(status=400, data=in_pokemon_party.errors)
-            return Response(status=200, data={'message': 'You can only have 6 pokemon'})
+            return Response(status=200, data={
+                'message': 'You can only have 6 pokemon'})
         except Exception as e:
             return Response(status=400, data={'message': str(e)})
 
